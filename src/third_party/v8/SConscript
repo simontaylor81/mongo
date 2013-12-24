@@ -77,6 +77,12 @@ LIBRARY_FLAGS = {
     'arch:x64': {
       'CPPDEFINES':   ['V8_TARGET_ARCH_X64'],
     },
+    'arch:arm': {
+      'CPPDEFINES':   ['V8_TARGET_ARCH_ARM'],
+      'unalignedaccesses:on' : {
+        'CPPDEFINES' : ['CAN_USE_UNALIGNED_ACCESSES=1']
+      },
+	},
   },
   'msvc': {
     'all': {
@@ -205,6 +211,26 @@ SOURCES = {
     version.cc
     zone.cc
     """),
+  'arch:arm': Split("""
+    arm/builtins-arm.cc
+    arm/code-stubs-arm.cc
+    arm/codegen-arm.cc
+    arm/constants-arm.cc
+    arm/cpu-arm.cc
+    arm/debug-arm.cc
+    arm/deoptimizer-arm.cc
+    arm/disasm-arm.cc
+    arm/frames-arm.cc
+    arm/full-codegen-arm.cc
+    arm/ic-arm.cc
+    arm/lithium-arm.cc
+    arm/lithium-codegen-arm.cc
+    arm/lithium-gap-resolver-arm.cc
+    arm/macro-assembler-arm.cc
+    arm/regexp-macro-assembler-arm.cc
+    arm/stub-cache-arm.cc
+    arm/assembler-arm.cc
+    """),
   'arch:ia32': Split("""
     ia32/assembler-ia32.cc
     ia32/builtins-ia32.cc
@@ -294,6 +320,8 @@ def get_options():
         arch_string = 'arch:x64'
     elif processor == 'amd64':
         arch_string = 'arch:x64'
+    elif processor.startswith('arm'):
+    	arch_string = 'arch:arm'
     else:
         assert False, "Unsupported architecture: " + processor
 
