@@ -21,7 +21,7 @@
 
 #if defined(__x86_64__) || defined(__amd64__) || defined(_WIN64)
 #define MONGO_PLATFORM_64
-#elif defined(__i386__) || defined(_WIN32)
+#elif defined(__i386__) || defined(_WIN32) || defined(__arm__)
 #define MONGO_PLATFORM_32
 #else
 #error "unknown platform"
