@@ -43,7 +43,12 @@
 #if defined(_WIN32)
 #include "mongo/platform/atomic_intrinsics_win32.h"
 #elif defined(__GNUC__)
+#if defined(__arm__)
+// Use GCC built-ins on ARM/GCC.
+#include "mongo/platform/atomic_intrinsics_gcc_builtins.h"
+#else
 #include "mongo/platform/atomic_intrinsics_gcc.h"
+#endif
 #else
 #error "Unsupported os/compiler family"
 #endif
