@@ -190,10 +190,14 @@ add_option( "pch" , "use precompiled headers to speed up the build (experimental
 add_option( "distcc" , "use distcc for distributing builds" , 0 , False )
 add_option( "clang" , "use clang++ rather than g++ (experimental)" , 0 , True )
 
+# SJT: Processor override option
+add_option( "processor" , "override the target processor, for cross-compilation (experimental)", 1, True, default=os.uname()[-1] )
+processor = get_option('processor')
+
 # debugging/profiling help
-if os.sys.platform.startswith("linux") and (os.uname()[-1] == 'x86_64'):
+if os.sys.platform.startswith("linux") and (processor == 'x86_64'):
     defaultAllocator = 'tcmalloc'
-elif (os.sys.platform == "darwin") and (os.uname()[-1] == 'x86_64'):
+elif (os.sys.platform == "darwin") and (processor == 'x86_64'):
     defaultAllocator = 'tcmalloc'
 else:
     defaultAllocator = 'system'
@@ -305,6 +309,9 @@ env = Environment( BUILD_DIR=variantDir,
                    UNITTEST_ALIAS='unittests',
                    UNITTEST_LIST='#build/unittests.txt',
                    PYSYSPLATFORM=os.sys.platform,
+				   
+				   # SJT HACK
+				   ENV = {'PATH' : os.environ['PATH']},
 
                    PCRE_VERSION='8.30',
                    CONFIGUREDIR = '#' + scons_data_dir + '/sconf_temp',
@@ -472,10 +479,10 @@ if has_option( "full" ):
 # ---- other build setup -----
 
 platform = os.sys.platform
-if "uname" in dir(os):
-    processor = os.uname()[4]
-else:
-    processor = "i386"
+#if "uname" in dir(os):
+#    processor = os.uname()[4]
+#else:
+#    processor = "i386"
 
 if force32:
     processor = "i386"
@@ -530,7 +537,7 @@ elif os.sys.platform.startswith("linux"):
 
     env.Append( LIBS=['m'] )
 
-    if os.uname()[4] == "x86_64" and not force32:
+    if processor == "x86_64" and not force32:
         linux64 = True
         nixLibPrefix = "lib64"
         env.Append( EXTRALIBPATH=["/usr/lib64" , "/lib64" ] )
@@ -541,6 +548,10 @@ elif os.sys.platform.startswith("linux"):
     if force32:
         env.Append( EXTRALIBPATH=["/usr/lib32"] )
         env.Append( CCFLAGS=["-mmmx"] )
+
+    # SJT HACK
+    if processor.startswith('arm'):
+        env.Append( CCFLAGS=["-fsigned-char"] )
 
     nix = True
 
@@ -705,7 +716,8 @@ if nix:
                          "-ggdb",
                          "-pthread",
                          "-Wall",
-                         "-Wsign-compare",
+						 # SJT HACK
+                         "-Wno-sign-compare" if processor.startswith('arm') else "-Wsign-compare",
                          "-Wno-unknown-pragmas",
                          "-Winvalid-pch"] )
     # env.Append( " -Wconversion" ) TODO: this doesn't really work yet
