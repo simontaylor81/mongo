@@ -769,7 +769,7 @@ def installBinary( e, name ):
 
     if (solaris or linux) and (not has_option("nostrip")):
         name = e.Command('stripped/%s' % name, name, Copy('$TARGET', '$SOURCE'))[0]
-        e.AddPostAction(name, 'strip $TARGET')
+        e.AddPostAction(name, '$STRIP $TARGET')
 
     distBinaries.append(name)
 

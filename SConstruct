@@ -153,6 +153,7 @@ add_option( "32" , "whether to force 32 bit" , 0 , True , "force32" )
 add_option( "cxx", "compiler to use" , 1 , True )
 add_option( "cc", "compiler to use for c" , 1 , True )
 add_option( "ld", "linker to use" , 1 , True )
+add_option( "strip", "strip executable to use", 1, True )
 
 add_option( "cpppath", "Include path if you have headers in a nonstandard directory" , 1 , True )
 add_option( "libpath", "Library path if you have libraries in a nonstandard directory" , 1 , True )
@@ -371,6 +372,9 @@ if has_option( "cc" ):
 
 if has_option( "ld" ):
     env["LINK"] = get_option( "ld" )
+
+if has_option( "strip" ):
+    env["STRIP"] = get_option( "strip" )
 
 if env['PYSYSPLATFORM'] in ('linux2', 'freebsd'):
     env['LINK_LIBGROUP_START'] = '-Wl,--start-group'
