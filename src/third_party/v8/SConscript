@@ -78,11 +78,8 @@ LIBRARY_FLAGS = {
       'CPPDEFINES':   ['V8_TARGET_ARCH_X64'],
     },
     'arch:arm': {
-      'CPPDEFINES':   ['V8_TARGET_ARCH_ARM'],
-      'unalignedaccesses:on' : {
-        'CPPDEFINES' : ['CAN_USE_UNALIGNED_ACCESSES=1']
-      },
-	},
+      'CPPDEFINES':   ['V8_TARGET_ARCH_ARM', 'USE_EABI_HARDFLOAT=1'],
+    },
   },
   'msvc': {
     'all': {
