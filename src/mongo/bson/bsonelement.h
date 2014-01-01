@@ -533,7 +533,7 @@ namespace mongo {
         case NumberDouble:
             return _numberDouble();
         case NumberInt:
-            return *reinterpret_cast< const int* >( value() );
+            return reinterpret_cast< const PackedInt* >( value() )->i;
         case NumberLong:
             return (double) *reinterpret_cast< const long long* >( value() );
         default:

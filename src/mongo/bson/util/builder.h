@@ -38,6 +38,14 @@ namespace mongo {
         double d;
     } PACKED_DECL;
 
+    /* Similarly, when loading an integer and immediately converting to double, gcc can generate floating point
+       load instructions, which cause the same SIGBUS errors as above. Wrapping the int access in a packed structure
+       prevents it from doing this.
+    */
+    struct PackedInt {
+        int i;
+    } PACKED_DECL;
+
 
     /* Note the limit here is rather arbitrary and is simply a standard. generally the code works
        with any object that fits in ram.
